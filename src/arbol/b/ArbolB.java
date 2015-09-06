@@ -6,6 +6,8 @@
 
 package arbol.b;
 
+
+
 import java.util.Stack;
 
 /**
@@ -57,6 +59,12 @@ public class ArbolB {
                     return i;
     }
     
+     boolean hoja(Pagina p){//Metodo para determinar si una pagina es una hoja
+        int j=0;
+        while (p.apunt[j]== null && j< p.cont -1)
+            j++;
+        return (p.apunt[j]== null);
+    }
     //Inserta x en la pagina p
    // i=donde(p,x);
     //i=insertar(p,x,i);
@@ -138,7 +146,7 @@ public class ArbolB {
         else{
             posicion= Buscar(raiz, x, pila);
             if (posicion== -1)
-                s=1;
+                s=1;// La llave esta en el arbol
                 else{
                         terminar=separar = 0;
                         
@@ -162,7 +170,7 @@ public class ArbolB {
                                 separar=0;
                                 i=donde(p,subir[0]);
                                 i= insertar (p,subir [0], i);
-                            //   cderechaApunt(p, i+1);  Esta debe ser la funcion buscar, asi sale en l libro pero creo ue es un error
+                              cderechaApunt(p, i+1);  //Esta debe ser la funcion buscar, asi sale en l libro pero creo ue es un error
                                 p.apunt[i+1]= nuevo;
                                 
                                 }
@@ -179,10 +187,250 @@ public class ArbolB {
             }
         }return s;
     }
+    int esta (Pagina p, int x, Stack pila){
+        int i=0;
+        boolean encontro= false;
+        int posicion=-1;
+        while(p!=null && !encontro){
+            i=0;
+            while(x>p.info[i] && i< p.cont -1)
+                i++;
+            if (x<p.info[i]){
+                pila.push(new Componente(p, i));
+               p= p.apunt[i];
+            }
+            else if (x> p.info[i]){
+                pila.push(new Componente(p, i+1));
+               p=  p.apunt[i+1];
+            }
+            else{
+                pila.push(new Componente (p,i));
+                encontro= true;
+            }
+        }
+        if (encontro==true ){
+            posicion=i;
+        }
+        return posicion;
+    }
     
+    void cderechaApunt(Pagina p, int i){
+        int j;
+        j=p.cont;
+        while(j>i){
+            p.apunt[j]=p.apunt[j-1];
+            j--;
+        }
+    }
+    
+   void retirar(Pagina p, int i){
+       while(i< p.cont -1){
+           p.info[i]= p.info[i+1];
+           i++;
+       }
+       p.cont= p.cont -1;
+   }
+   
+   void cambio(Pagina p, Pagina q, Pagina r, int i, int x ){
+       int k,t;
+       if(x>r.info[r.cont -1]){
+           t=q.info[i];
+           retirar(q,i);
+           k=0;
+           k=insertar(p,t,k);
+           t= r.info[r.cont -1];
+           retirar(r, r.cont -1);
+           k=i;
+           if (k==-1 )
+               k=0;
+           k= insertar (q,t,k);
+       }
+       else{
+           t=q.info[i];
+           retirar(q,i);
+           k=p.cont -1;
+           if (k== -1)
+               k=0;
+           k= insertar (p,t,k);
+           t= r.info[0];
+           retirar(r, 0);
+           k=i;
+           if (q.cont != 0)
+               if (k> q.cont -1)
+                   k=q.cont -1;
+           k= insertar(q,t, k);
+       }
+   }
+   
+   void cizquierda_apunt (Pagina p, int i, int j){
+       while(i<j){
+           p.apunt[i]=p.apunt[i+1];
+           i++;
+       }
+       p.apunt[i]= null;
+   }
+   
+   void unir(Pagina q, Pagina r, Pagina p, int i, Stack pila, int x, int posicion){
+       int terminar= 0, j, k;
+       Pagina t;
+       Componente objeto =new Componente();
+       retirar(p, posicion);
+       if (x<r.info[0]){
+           t=p;
+           p=r;
+           r=t;
+       }
+       while(terminar==0){
+           if (r.cont <N && p.cont> N){
+               cambio(r,q,p,i,x);
+               r.apunt[r.cont]=p.apunt[0];
+               cizquierda_apunt(p, 0, p.cont +1);
+               terminar=1;
+           }
+           else if (p.cont < N && r.cont > N){
+               cambio(p,q,r,i,x);
+               cderechaApunt(p, 0);
+               p.apunt[0]= r.apunt[r.cont +1];
+               terminar =1;
+           }
+           
+           else {
+               j=r.cont;
+               r.info[j++]= q.info[i];
+               k=0;
+               while (k<= p.cont -1){
+                   r.info[j++]= p.info[k++];
+               }
+               r.cont= j;
+               retirar(q, i);
+               k=0;
+               j= M - p.cont;
+               while (p.apunt[k] != null){
+                   r.apunt[j++]= p.apunt[k++];
+               }
+               p= null;
+               if (q.cont == 0){
+                   q.apunt[i+1]= null;
+                   if (pila.empty() == true){
+                       q= null;
+                   }
+               }
+               else cizquierda_apunt(q, i+1, q.cont+1);
+               
+               if (q != null){
+                   if (q.cont >=N){
+                       terminar = 1;
+                   }
+                   else{
+                       t=q;
+                       if (!pila.empty()){
+                           objeto= (Componente)pila.pop();
+                           q= objeto.s;
+                           i= objeto.v;
+                           if (x>= q.info[0]){
+                               p=t;
+                               r= q.apunt[i-1];
+                               i= i-1;
+                           }
+                           else {
+                               r=t;
+                               p= q.apunt [i+1];
+                           }
+                       }
+                       else terminar=1;
+                   }
+               }
+               else{
+                   terminar =1;
+                   raiz =r;
+               }
+           }
+           
+           
+       }
+   }
+    
+    int retirarkey(int x){
+        int s, posicion, i, k;
+        Pagina p,q,r,t;
+        Stack pila= new Stack();
+        Componente objeto = new Componente();
+        s=1;
+        posicion= esta (raiz, x, pila);
+        if (posicion == -1)
+            s=0;
+        else{
+            objeto= (Componente)pila.pop();
+            p= objeto.s;
+            i= objeto.v;
+            if (!hoja (p)){
+               t=p;
+               k=i;
+               pila.push(new Componente (p, i+1));
+               p=p.apunt[i+1];
+               while (p != null){
+                   pila.push(new Componente (p,0));
+                   p=p.apunt[0];
+               }
+               objeto = (Componente)pila.pop();
+               p=objeto.s;
+               i=objeto.v;
+               t.info[k]= p.info[0];
+               x= p.info[0];
+               posicion=0;
+            }
+            if (p.cont >N )
+                retirar(p, posicion);
+            else {
+                if (!pila.empty()){
+                    objeto= (Componente)pila.pop();
+                    q= objeto.s;
+                    i= objeto.v;
+                    if (i< q.cont){
+                        r= q.apunt[i+1];
+                        if (r.cont> N){
+                            retirar(p, posicion);
+                            cambio(p,q,r,i,x);
+                            
+                        }
+                        else {
+                            if ( i!= 0){
+                                r= q.apunt[i-1];
+                                if (r.cont >N){
+                                    retirar (p, posicion);
+                                    cambio(p,q,r,i-1, x);
+                                    
+                                }
+                                else unir(q, r, p, i-1, pila, x, posicion);
+                            }
+                            else unir(q, r, p, i, pila, x, posicion);
+                        }
+                    }
+                    else {
+                        r=q.apunt[i-1];
+                        if (r.cont> N){
+                            retirar (p, posicion);
+                            cambio(p,q,r,i-1,x);
+                        }
+                        else unir(q, r, p, i-1, pila, x, posicion);
+                    }
+                }
+                else {
+                    retirar (p, posicion);
+                    if (p.cont== 0){
+                        raiz= null;
+                    }
+                }
+            }
+        }
+        return s;
+    }
     
     public static void main(String[] args) {
-        // TODO code application logic here
+        int a;
+       ArbolB b=new ArbolB();
+        b.insertarKey(4);
+        
     }
     
 }
