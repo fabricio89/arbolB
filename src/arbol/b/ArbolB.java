@@ -85,6 +85,65 @@ public class ArbolB {
     return posicion;
 }
     
+    Pagina romper (Pagina p, Pagina t, int x, int[]subir){
+        int []a;
+        int i=0;
+        a= new int[M1];
+        boolean s = false;
+        Pagina []b= new Pagina[M1+1];
+        while(i<M && !s){
+            if(p.info[i]< x){
+                a[i]=p.info[i];
+                b[i]=p.apunt[i];
+                p.apunt[i++]=null;
+            }else s =true;
+        }
+        a[i]= x;
+        b[i]=p.apunt[i];
+        p.apunt[i]=null;
+        b[++i]=t;
+        while(i<= M){
+            a[i]=p.info[i-1];
+            b[i+1]=p.apunt[i];
+            p.apunt[i++]= null;
+            
+        }
+        Pagina q= new Pagina();
+        inicializar(q);
+        p.cont=q.cont= N;
+        i=0;
+        while (i<N){
+            p.info[i]=a[i];
+            p.apunt[i]= b[i];
+            q.info[i]= a [i+N+1];
+            i++;
+        }
+        p.apunt[N]=b[N];
+        q.apunt[N]= b[M1];
+        subir[0]= a[N];
+        return q;
+    }
+    
+    int insertarKey(int x){
+        Stack pila= new Stack();
+        int[]subir= new int[1];
+        int[]subir1= new int[1];
+        int posicion, i, terminar, separar;
+        Pagina p= null, nuevo= null, nuevo1;
+        int s=0;
+        
+        if (raiz==null){
+            raiz= crearPagina(x);
+        }
+        else{
+            posicion= Buscar(raiz, x, pila);
+            if (posicion== -1){
+                s=1;
+            }
+        }
+    }
+    
+    
     public static void main(String[] args) {
         // TODO code application logic here
     }
