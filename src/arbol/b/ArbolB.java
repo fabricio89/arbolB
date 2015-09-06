@@ -137,10 +137,47 @@ public class ArbolB {
         }
         else{
             posicion= Buscar(raiz, x, pila);
-            if (posicion== -1){
+            if (posicion== -1)
                 s=1;
+                else{
+                        terminar=separar = 0;
+                        
+                        while(!pila.empty() && terminar ==0){
+                            p= (Pagina)pila.pop();
+                            
+                            
+                            if (separar==0){
+                                nuevo=romper(p, null, x, subir);
+                                separar=1;
+                            }
+                            
+                            else{
+                                nuevo1=romper(p, nuevo, subir[0], subir1);
+                                subir[0]= subir1[0];
+                                nuevo=nuevo1;
+                            }
+                        }
+                        else {
+                                if(separar==1){
+                                separar=0;
+                                i=donde(p,subir[0]);
+                                i= insertar (p,subir [0], i);
+                               // cderecha Apunt(p, i+1);
+                                p.apunt[i+1]= nuevo;
+                                
+                                }
+                                else posicion = insertar(p,x,posicion);
+                                terminar=1;
+                                }
+                        }
+            
+            if (separar ==1 && terminar ==0){
+                raiz= crearPagina (subir[0]);
+                raiz.apunt[0]=p;
+                raiz.apunt[1]= nuevo;
             }
-        }
+            
+        }return s;
     }
     
     
