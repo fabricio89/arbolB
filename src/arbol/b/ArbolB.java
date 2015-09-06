@@ -144,7 +144,7 @@ public class ArbolB {
                         
                         while(!pila.empty() && terminar ==0){
                             p= (Pagina)pila.pop();
-                            
+                            if (p.cont == M){
                             
                             if (separar==0){
                                 nuevo=romper(p, null, x, subir);
@@ -162,7 +162,7 @@ public class ArbolB {
                                 separar=0;
                                 i=donde(p,subir[0]);
                                 i= insertar (p,subir [0], i);
-                               // cderecha Apunt(p, i+1);
+                            //   cderechaApunt(p, i+1);  Esta debe ser la funcion buscar, asi sale en l libro pero creo ue es un error
                                 p.apunt[i+1]= nuevo;
                                 
                                 }
