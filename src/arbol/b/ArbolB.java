@@ -176,7 +176,7 @@ public class ArbolB {
                 raiz.apunt[0]=p;
                 raiz.apunt[1]= nuevo;
             }
-            
+            }
         }return s;
     }
     
