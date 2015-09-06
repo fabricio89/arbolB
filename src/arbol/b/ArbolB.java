@@ -170,7 +170,7 @@ public class ArbolB {
                                 separar=0;
                                 i=donde(p,subir[0]);
                                 i= insertar (p,subir [0], i);
-                              cderechaApunt(p, i+1);  //Esta debe ser la funcion buscar, asi sale en l libro pero creo ue es un error
+                              cderechaApunt(p, i+1); 
                                 p.apunt[i+1]= nuevo;
                                 
                                 }
